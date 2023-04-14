@@ -71,5 +71,77 @@ class MyThread extends Thread{
     }
 }
 ```
+```
+public class ThreadTest01 {
+    public static void main(String[] args) {
+        new Thread(()->{
+            System.out.println("0000");
+        },"t1").start();
+        System.out.println("11111");
+    }
+}
+```
+继承Thread优缺点：
++ 优点：编码简单
++ 缺点：线程类已经继承了Thread类就无法继承其他类了，功能不能通过继承拓展（单继承的局限性）
+***
+### Runnable
+Runnable创建线程方式：创建线程类，匿名内部类方式
+```
+@Slf4j(topic = "c.RunnableTest01")
+public class RunnableTest01 {
+
+    public static void main(String[] args) {
+        RunnableTest runnableTest = new RunnableTest();
+        Thread thread = new Thread(runnableTest);
+        thread.start();
+        log.info("dddddddddd");
+    }
+}
+
+@Slf4j(topic = "c.RunnableTest")
+class RunnableTest implements Runnable{
+
+    @Override
+    public void run() {
+        log.info("aaaaa");
+    }
+}
+```
+Thread类本身也实现了Runnable接口，Thread类中持有Runnable的属性，执行线程run方法底层是调用Runnable#run:
+```
+public class Thread implements Runnable {
+    private Runnable target;
+    
+    public void run() {
+        if (target != null) {
+          	// 底层调用的是 Runnable 的 run 方法
+            target.run();
+        }
+    }
+}
+```
+实现Runnable方式的优缺点：
++ 缺点：代码复杂一点
++ 优点：
+  + 线程任务类只实现了Runnable接口，可以继续继承其他类，避免了单继承的局限性
+  + 同一个线程任务对象可以被包装成多个线程对象
+  + 适合多个线程去共享同一个资源
+  + 实现解耦操作，线程任务代码可以被多个线程共享，线程任务代码和线程独立
+  + 线程池可以放入实现Runnable接口或Callale线程任务对象
+***
+###Callable
+实现Callable接口   
+  1. 定义一个线程任务类实现Callable接口，申明线程执行的结果类型
+  2. 重写线程任务类的call方法，这个方法可以直接返回执行的结果
+  3. 创建一个Callable的线程任务对象
+  4. 把Callable的线程任务对象包装成一个未来任务对象
+  5. 把未来任务对象 包装成线程对象
+  6. 调用线程的start()方法启动线程
+
+
+
+
+
 
 
